@@ -56,7 +56,7 @@ export class InnerSlider extends React.Component {
     this.ssrInit();
     this.props.onInit && this.props.onInit();
     if (this.props.lazyLoad) {
-      let slidesToLoad = getOnDemandLazySlides({
+      const slidesToLoad = getOnDemandLazySlides({
         ...this.props,
         ...this.state
       });
@@ -71,7 +71,7 @@ export class InnerSlider extends React.Component {
     }
   };
   componentDidMount = () => {
-    let spec = { listRef: this.list, trackRef: this.track, ...this.props };
+    const spec = { listRef: this.list, trackRef: this.track, ...this.props };
     this.updateState(spec, true, () => {
       this.adaptHeight();
       this.props.autoplay && this.autoPlay("update");
@@ -128,7 +128,7 @@ export class InnerSlider extends React.Component {
     }
   };
   componentWillReceiveProps = nextProps => {
-    let spec = {
+    const spec = {
       listRef: this.list,
       trackRef: this.track,
       ...nextProps,
@@ -441,7 +441,10 @@ export class InnerSlider extends React.Component {
   disableBodyScroll = () => {
     const preventDefault = e => {
       e = e || window.event;
-      if (e.preventDefault) e.preventDefault();
+      if (e.preventDefault) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       e.returnValue = false;
     };
     window.ontouchmove = preventDefault;
@@ -457,7 +460,7 @@ export class InnerSlider extends React.Component {
     state !== "" && this.setState(state);
   };
   swipeMove = e => {
-    let state = swipeMove(e, {
+    const state = swipeMove(e, {
       ...this.props,
       ...this.state,
       trackRef: this.track,
@@ -471,7 +474,7 @@ export class InnerSlider extends React.Component {
     this.setState(state);
   };
   swipeEnd = e => {
-    let state = swipeEnd(e, {
+    const state = swipeEnd(e, {
       ...this.props,
       ...this.state,
       trackRef: this.track,
@@ -595,12 +598,12 @@ export class InnerSlider extends React.Component {
     this.autoPlay("blur");
 
   render = () => {
-    var className = classnames("slick-slider", this.props.className, {
+    const className = classnames("slick-slider", this.props.className, {
       "slick-vertical": this.props.vertical,
       "slick-initialized": true
     });
-    let spec = { ...this.props, ...this.state };
-    let trackProps = extractObject(spec, [
+    const spec = { ...this.props, ...this.state };
+    const trackPropsUp = extractObject(spec, [
       "fade",
       "cssEase",
       "speed",
@@ -624,15 +627,15 @@ export class InnerSlider extends React.Component {
       "centerPadding"
     ]);
     const { pauseOnHover } = this.props;
-    trackProps = {
-      ...trackProps,
+    const trackProps = {
+      ...trackPropsUp,
       onMouseEnter: pauseOnHover ? this.onTrackOver : null,
       onMouseLeave: pauseOnHover ? this.onTrackLeave : null,
       onMouseOver: pauseOnHover ? this.onTrackOver : null,
       focusOnSelect: this.props.focusOnSelect ? this.selectHandler : null
     };
 
-    var dots;
+    let dots;
     if (
       this.props.dots === true &&
       this.state.slideCount >= this.props.slidesToShow
@@ -660,7 +663,7 @@ export class InnerSlider extends React.Component {
       dots = <Dots {...dotProps} />;
     }
 
-    var prevArrow, nextArrow;
+    let prevArrow, nextArrow;
     let arrowProps = extractObject(spec, [
       "infinite",
       "centerMode",
@@ -677,7 +680,7 @@ export class InnerSlider extends React.Component {
       nextArrow = <NextArrow {...arrowProps} />;
     }
 
-    var verticalHeightStyle = null;
+    let verticalHeightStyle = null;
 
     if (this.props.vertical) {
       verticalHeightStyle = {
@@ -685,7 +688,7 @@ export class InnerSlider extends React.Component {
       };
     }
 
-    var centerPaddingStyle = null;
+    let centerPaddingStyle = null;
 
     if (this.props.vertical === false) {
       if (this.props.centerMode === true) {

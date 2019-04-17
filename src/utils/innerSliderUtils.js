@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 export const getOnDemandLazySlides = spec => {
-  let onDemandSlides = [];
-  let startIndex = lazyStartIndex(spec);
-  let endIndex = lazyEndIndex(spec);
+  const onDemandSlides = [];
+  const startIndex = lazyStartIndex(spec);
+  const endIndex = lazyEndIndex(spec);
   for (let slideIndex = startIndex; slideIndex < endIndex; slideIndex++) {
     if (spec.lazyLoadedList.indexOf(slideIndex) < 0) {
       onDemandSlides.push(slideIndex);
@@ -15,9 +15,9 @@ export const getOnDemandLazySlides = spec => {
 
 // return list of slides that need to be present
 export const getRequiredLazySlides = spec => {
-  let requiredSlides = [];
-  let startIndex = lazyStartIndex(spec);
-  let endIndex = lazyEndIndex(spec);
+  const requiredSlides = [];
+  const startIndex = lazyStartIndex(spec);
+  const endIndex = lazyEndIndex(spec);
   for (let slideIndex = startIndex; slideIndex < endIndex; slideIndex++) {
     requiredSlides.push(slideIndex);
   }
@@ -48,7 +48,7 @@ export const getSwipeDirection = (touchObject, verticalSwiping = false) => {
   xDist = touchObject.startX - touchObject.curX;
   yDist = touchObject.startY - touchObject.curY;
   r = Math.atan2(yDist, xDist);
-  swipeAngle = Math.round(r * 180 / Math.PI);
+  swipeAngle = Math.round((r * 180) / Math.PI);
   if (swipeAngle < 0) {
     swipeAngle = 360 - Math.abs(swipeAngle);
   }
@@ -90,7 +90,7 @@ export const canGoNext = spec => {
 
 // given an object and a list of keys, return new object with given keys
 export const extractObject = (spec, keys) => {
-  let newObject = {};
+  const newObject = {};
   keys.forEach(key => (newObject[key] = spec[key]));
   return newObject;
 };
@@ -98,9 +98,9 @@ export const extractObject = (spec, keys) => {
 // get initialized state
 export const initializedState = spec => {
   // spec also contains listRef, trackRef
-  let slideCount = React.Children.count(spec.children);
-  let listWidth = Math.ceil(getWidth(ReactDOM.findDOMNode(spec.listRef)));
-  let trackWidth = Math.ceil(getWidth(ReactDOM.findDOMNode(spec.trackRef)));
+  const slideCount = React.Children.count(spec.children);
+  const listWidth = Math.ceil(getWidth(ReactDOM.findDOMNode(spec.listRef)));
+  const trackWidth = Math.ceil(getWidth(ReactDOM.findDOMNode(spec.trackRef)));
   let slideWidth;
   if (!spec.vertical) {
     let centerPaddingAdj = spec.centerMode && parseInt(spec.centerPadding) * 2;
@@ -195,7 +195,7 @@ export const slideHandler = spec => {
       finalSlide = animationSlide + slideCount;
       if (!infinite) finalSlide = 0;
       else if (slideCount % slidesToScroll !== 0)
-        finalSlide = slideCount - slideCount % slidesToScroll;
+        finalSlide = slideCount - (slideCount % slidesToScroll);
     } else if (!canGoNext(spec) && animationSlide > currentSlide) {
       animationSlide = finalSlide = currentSlide;
     } else if (centerMode && animationSlide >= slideCount) {
@@ -265,7 +265,8 @@ export const changeSlide = (spec, options) => {
     slideOffset = indexOffset === 0 ? slidesToScroll : indexOffset;
     targetSlide = currentSlide + slideOffset;
     if (lazyLoad && !infinite) {
-      targetSlide = (currentSlide + slidesToScroll) % slideCount + indexOffset;
+      targetSlide =
+        ((currentSlide + slidesToScroll) % slideCount) + indexOffset;
     }
   } else if (options.message === "dots") {
     // Click on dots
@@ -410,6 +411,7 @@ export const swipeMove = (e, spec) => {
   if (touchObject.swipeLength > 10) {
     state["swiping"] = true;
     e.preventDefault();
+    e.stopPropagation();
   }
   return state;
 };
@@ -428,15 +430,18 @@ export const swipeEnd = (e, spec) => {
     onSwipe
   } = spec;
   if (!dragging) {
-    if (swipe) e.preventDefault();
+    if (swipe) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     return {};
   }
-  let minSwipe = verticalSwiping
+  const minSwipe = verticalSwiping
     ? listHeight / touchThreshold
     : listWidth / touchThreshold;
-  let swipeDirection = getSwipeDirection(touchObject, verticalSwiping);
+  const swipeDirection = getSwipeDirection(touchObject, verticalSwiping);
   // reset the state of touch related state variables.
-  let state = {
+  const state = {
     dragging: false,
     edgeDragged: false,
     scrolling: false,
@@ -482,10 +487,10 @@ export const swipeEnd = (e, spec) => {
   return state;
 };
 export const getNavigableIndexes = spec => {
-  let max = spec.infinite ? spec.slideCount * 2 : spec.slideCount;
+  const max = spec.infinite ? spec.slideCount * 2 : spec.slideCount;
+  const indexes = [];
   let breakpoint = spec.infinite ? spec.slidesToShow * -1 : 0;
   let counter = spec.infinite ? spec.slidesToShow * -1 : 0;
-  let indexes = [];
   while (breakpoint < max) {
     indexes.push(breakpoint);
     breakpoint = counter + spec.slidesToScroll;
@@ -704,7 +709,7 @@ export const getTrackLeft = spec => {
       slideCount % slidesToScroll !== 0 &&
       slideIndex + slidesToScroll > slideCount
     ) {
-      slidesToOffset = slidesToShow - slideCount % slidesToScroll;
+      slidesToOffset = slidesToShow - (slideCount % slidesToScroll);
     }
     if (centerMode) {
       slidesToOffset = parseInt(slidesToShow / 2);
