@@ -102,12 +102,20 @@ var renderSlides = function(spec) {
       slidesToScroll: spec.slidesToScroll,
       currentSlide: spec.currentSlide
     };
+    var shouldRenderElem = () => {
+      if (!spec.lazyLoad) {
+        return elem;
+      }
+
+      if (spec.renderCurrentOnly) {
+        return spec.currentSlide === index;
+      }
+
+      return spec.lazyLoadedList.indexOf(index) >= 0;
+    };
 
     // in case of lazyLoad, whether or not we want to fetch the slide
-    if (
-      !spec.lazyLoad ||
-      (spec.lazyLoad && spec.lazyLoadedList.indexOf(index) >= 0)
-    ) {
+    if (shouldRenderElem()) {
       child = elem;
     } else {
       child = <div />;

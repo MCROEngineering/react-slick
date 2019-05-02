@@ -612,6 +612,7 @@ export class InnerSlider extends React.Component {
       "focusOnSelect",
       "currentSlide",
       "lazyLoad",
+      "renderCurrentOnly",
       "lazyLoadedList",
       "rtl",
       "slideWidth",
